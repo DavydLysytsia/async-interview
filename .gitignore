@@ -1,0 +1,17 @@
+# Secrets and local data — never commit these
+**/.env
+server/AsyncInterview.Api/app.db*
+
+# Build output
+**/bin/
+**/obj/
+server/AsyncInterview.Api/wwwroot/
+client/node_modules/
+client/dist/
+
+# Editor / OS noise
+.vs/
+.vscode/
+*.user
+.DS_Store
+Thumbs.db
