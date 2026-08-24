@@ -83,10 +83,11 @@ are ever committed; OAuth tokens live in the (gitignored) database.
 
 ## Known limitations (documented on purpose)
 
-1. **Privacy status:** the app requests `unlisted`, but YouTube forces uploads from
-   unverified API projects (any project still in testing mode) to **private** and the
-   preview embed may show "unavailable" to anyone but the owner. The app records the
-   status YouTube actually applied, labels it in the UI, and links to the watch page.
+1. **Privacy status:** the app requests `unlisted`. Google documents that uploads from
+   unverified API projects may be forced to **private**; in our live testing (2026-08-24)
+   the `unlisted` status was honored and embeds play normally. The app records whatever
+   status YouTube actually applies, labels `private` videos in the UI, and links to the
+   watch page as a fallback.
 2. **Quota:** the default YouTube Data API quota (10,000 units/day) allows roughly
    **6 uploads per day** (`videos.insert` ≈ 1,600 units).
 3. **Testing-mode tokens:** Google expires refresh tokens for testing-mode consent

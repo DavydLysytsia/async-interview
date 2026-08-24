@@ -16,8 +16,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 var options = new AppOptions
 {
-    GoogleClientId = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID"),
-    GoogleClientSecret = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_SECRET"),
+    // Trim() guards against stray whitespace from copy-pasting credentials.
+    GoogleClientId = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID")?.Trim(),
+    GoogleClientSecret = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_SECRET")?.Trim(),
     AppBaseUrl = (Environment.GetEnvironmentVariable("APP_BASE_URL") ?? "http://localhost:5240").TrimEnd('/'),
     DevFakeAuth = string.Equals(Environment.GetEnvironmentVariable("DEV_FAKE_AUTH"), "true",
         StringComparison.OrdinalIgnoreCase)

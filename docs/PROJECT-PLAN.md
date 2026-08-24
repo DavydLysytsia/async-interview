@@ -116,7 +116,7 @@ ASP.NET Core  ── serves SPA from wwwroot (fallback to index.html)
 | 1 | Planning & setup: requirements review, plan, repo, scaffold, DB plan | 4–6 | **done 2026-08-22** (this document + scaffold) |
 | 2 | Auth & profile: Google sign-in, protected routes, profile CRUD | 8–12 | scaffolded; needs Google credentials to go live |
 | 3 | Interview workflow: questions, response states, file selection | 8–12 | scaffolded skeleton |
-| 4 | Google OAuth + YouTube upload (the risky one — spike EARLY) | 10–16 | service written; blocked on Google Cloud setup (GOOGLE-SETUP.md) |
+| 4 | Google OAuth + YouTube upload (the risky one — spike EARLY) | 10–16 | **spike PASSED 2026-08-24**: real sign-in, connect, upload, embed all verified live; YouTube honored `unlisted` (forced-private risk did not materialize in testing) |
 | 5 | Preview page, validation, responsive layout, accessibility | 5–8 | |
 | 6 | Testing evidence, README, final report, demo video, activity log | 5–8 | activity log started |
 
