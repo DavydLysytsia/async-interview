@@ -6,6 +6,7 @@ using AsyncInterview.Api.Data;
 using AsyncInterview.Api.Models;
 using AsyncInterview.Api.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 
 // Load server/.env (or any .env up the tree) for local development.
@@ -26,6 +27,9 @@ var options = new AppOptions
 builder.Services.AddSingleton(options);
 
 var dbPath = Environment.GetEnvironmentVariable("DB_PATH") ?? "app.db";
+// SQLite creates the file but not missing folders (e.g. /home/data on Azure).
+var dbDir = Path.GetDirectoryName(Path.GetFullPath(dbPath));
+if (!string.IsNullOrEmpty(dbDir)) Directory.CreateDirectory(dbDir);
 builder.Services.AddDbContext<AppDbContext>(o => o.UseSqlite($"Data Source={dbPath}"));
 
 builder.Services.AddScoped<EfDataStore>();
@@ -33,6 +37,16 @@ builder.Services.AddScoped<YouTubeVideoService>();
 
 builder.Services.AddControllers().AddJsonOptions(o =>
     o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)));
+
+// Azure App Service terminates HTTPS in front of the app; without honouring
+// X-Forwarded-Proto the Google OAuth redirect URIs would be built as http://
+// and Google would reject them with redirect_uri_mismatch.
+builder.Services.Configure<ForwardedHeadersOptions>(o =>
+{
+    o.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    o.KnownIPNetworks.Clear();
+    o.KnownProxies.Clear();
+});
 
 var auth = builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme);
 auth.AddCookie(cookie =>
@@ -96,6 +110,8 @@ if (options.GoogleConfigured)
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+
+app.UseForwardedHeaders();
 
 using (var scope = app.Services.CreateScope())
 {

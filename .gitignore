@@ -5,6 +5,8 @@ server/AsyncInterview.Api/app.db*
 # Build output
 **/bin/
 **/obj/
+**/publish/
+server/AsyncInterview.Api/app.zip
 server/AsyncInterview.Api/wwwroot/
 client/node_modules/
 client/dist/
