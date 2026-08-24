@@ -1,38 +1,40 @@
-# Draft note to instructor (send before/with first progress update)
+# Note to instructor (copy, adjust greeting, send from Davyd's email)
 
-> Subject: Async interview project — scope decisions
+> Subject: Async interview project — deployed, scope decisions
 >
 > Hi [instructor name],
 >
-> I've started the asynchronous interview project (repo:
-> https://github.com/DavydLysytsia/async-interview). As you suggested, I'm sending
-> justifications for the adjustments I made instead of asking permission:
+> The asynchronous interview project is up and running:
+>
+> - **Live app:** https://async-interview-davyd.azurewebsites.net (Azure App Service)
+> - **Repo:** https://github.com/DavydLysytsia/async-interview (public — plan, activity
+>   log, test evidence and setup docs are in `docs/`)
+>
+> The core workflow already works end to end: Google sign-in, a separate "Connect
+> YouTube" authorization, uploading a video answer to my own YouTube channel through the
+> YouTube Data API, and a preview page with the answers embedded. As you suggested, here
+> are the justifications for the adjustments I made instead of asking permission:
 >
 > 1. **Sign-in is "Sign in with Google" only — no local email/password.** Every user
->    already needs a Google account to upload to their own YouTube channel, and the
->    requirements allow an "external login identifier" instead of a password hash. This
->    removes the register/password/recover pages from the original sketch and the security
->    risk of storing passwords. Sign-out and server-side protection of private routes stay.
-> 2. **YouTube permissions are requested separately from sign-in** (a "Connect YouTube"
->    step asking only for upload + read-only scopes), to follow the "request only the
->    permissions required" guideline.
-> 3. **Video responses start as a file-upload workflow** (allowed by requirement #4);
->    in-browser recording is a stretch goal if hours allow.
-> 4. **From the sketch, video collections / share links / the AI resume ("Phase 2") are
->    deferred as stretch scope** — they aren't needed by the minimum requirements. I kept
->    the sketch's UX notes: shared header/footer, first-input focus + tab order on action
->    pages, and forms that keep a local draft if the page closes.
-> 5. **Stack:** ASP.NET Core + EF Core (SQLite) + React, deployed as a single Azure App
->    Service — consistent with my program stack and my recent class-project deployment.
-> 6. **Known API limitation I'll document:** uploads from unverified API projects are
->    forced to *private* by YouTube, so the "unlisted" default may be overridden and
->    embedded playback may be limited; the app records/report what YouTube actually
->    applied, and the preview page falls back to direct YouTube links. Also the default
->    quota allows roughly 6 uploads/day, and testing-mode refresh tokens expire weekly
->    (the app treats that as "reconnect needed").
+>    needs a Google account anyway to upload to YouTube, and the requirements allow an
+>    "external login identifier" instead of a password hash. This removes the
+>    register/password/recover pages from the original sketch and the risk of storing
+>    passwords. Sign-out and server-side protection of private routes remain.
+> 2. **YouTube permissions are a separate consent step** (upload + read-only scopes
+>    only), following the "request only the permissions required" guideline.
+> 3. **Video answers are file uploads** (allowed by requirement #4); in-browser
+>    recording is a stretch goal. From the sketch, collections / share links / the AI
+>    resume are deferred as stretch scope; the sketch's UX details (shared
+>    header/footer, first-input focus, tab order, local form drafts) are implemented.
+> 4. **Stack:** ASP.NET Core + EF Core (SQLite) + React, one Azure App Service —
+>    consistent with my program stack and my class-project deployment.
+> 5. **Notes on the live demo:** the OAuth app is in Google "testing" mode (no
+>    verification, as the requirements allow), so only listed test users can sign in —
+>    send me the Gmail address you'd like added if you want to try it live; otherwise
+>    the demo video will cover the workflow. Uploads are quota-limited to ~6/day, and
+>    in testing the videos land as *unlisted* on the candidate's own channel.
 >
-> I'm logging dates/tasks/hours in docs/ACTIVITY-LOG.md in the repo, with the commit
-> history as evidence. I'll reach out if I hit a wall with the YouTube API.
+> Hours are logged in `docs/ACTIVITY-LOG.md` in the repo, with commits as evidence.
 >
 > Thanks!
 > Davyd

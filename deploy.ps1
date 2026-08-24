@@ -5,16 +5,26 @@
 
 $ErrorActionPreference = "Stop"
 
-$Rg   = "bvc-group2-backend-rg"   # existing resource group (hosts the free F1 plan)
-$Plan = "bvc-group2-plan"         # existing F1 Linux plan — F1 quota allows no second plan
+# NOTE: the Azure for Students subscription only runs two Free-tier apps at a
+# time (extra free apps are force-stopped with QuotaExceeded regardless of plan
+# or region). The old vehiclerental-davyd app was stopped to free its slot, and
+# this app reuses that plan. To rehost elsewhere, change these three values.
+$Rg   = "VehicleRentalRG"
+$Plan = "VehicleRentalPlan"
 $App  = "async-interview-davyd"
 $ProjDir = Join-Path $PSScriptRoot "server\AsyncInterview.Api"
 
 # 1. Create the web app on the existing plan (skipped if it already exists)
-$exists = az webapp show -g $Rg -n $App --query name -o tsv 2>$null
+# (probe must not die on the expected "not found" stderr under EAP=Stop)
+$prevEap = $ErrorActionPreference
+$ErrorActionPreference = "SilentlyContinue"
+az webapp show -g $Rg -n $App -o none 2>$null
+$exists = ($LASTEXITCODE -eq 0)
+$ErrorActionPreference = $prevEap
 if (-not $exists) {
     Write-Host "Creating web app $App..."
-    az webapp create -g $Rg -p $Plan -n $App --runtime "DOTNETCORE:10.0" -o none
+    # VehicleRentalPlan is a WINDOWS F1 plan -> Windows runtime id.
+    az webapp create -g $Rg -p $Plan -n $App --runtime "dotnet:10" -o none
 } else {
     Write-Host "Web app $App already exists - updating it."
 }
@@ -36,7 +46,7 @@ az webapp config appsettings set -g $Rg -n $App -o none --settings `
     ("GOOGLE_CLIENT_SECRET=" + $envMap["GOOGLE_CLIENT_SECRET"]) `
     ("APP_BASE_URL=https://" + $AppHost) `
     "DEV_FAKE_AUTH=false" `
-    "DB_PATH=/home/data/app.db"
+    "DB_PATH=D:\home\data\app.db"
 
 # 3. Publish and zip
 Write-Host "Publishing..."
