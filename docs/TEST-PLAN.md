@@ -31,7 +31,10 @@ Environments:
 | 17 | Failure: consent denied | Cancel on Google consent screen | Friendly message, retry offered | — | — | Not yet tested |
 | 18 | Failure: unsupported file | Upload a .txt | Rejected server-side with a friendly message, no crash | "Unsupported file type. Upload a video file (mp4, webm, mov...)." shown on the card | L-real 08-24 | Pass |
 | 19 | Failure: expired token | Wait ~7 days (testing-mode expiry) | Status shows "reconnect needed"; upload prompts reconnect | Expected around 08-31; will document | — | Pending |
-| 20 | PROD end-to-end | Sign in, connect, upload, preview on the Azure URL | Same behaviour as L-real over HTTPS | See PROD rows below | PROD 08-24 | In progress |
+| 20a | PROD health/config | GET `/api/health`, `/api/auth/config` on the Azure URL | 200s; `googleEnabled:true, devFakeAuth:false` | As expected | PROD 08-24 | Pass |
+| 20b | PROD SPA + routing | Open the site root | Landing renders over HTTPS | As expected | PROD 08-24 | Pass |
+| 20c | PROD OAuth challenge | GET `/api/auth/google`, inspect 302 | Redirect to accounts.google.com with `https://` redirect_uri (forwarded headers working) | Exact registered URI + correct scopes observed | PROD 08-24 | Pass |
+| 20d | PROD sign-in round trip | Complete Google sign-in in a browser | Dashboard, session cookie | Blocked *on the dev machine only*: local security software intercepts browser traffic to the new domain (curl succeeds; google.com fine). Verify from another device (e.g. phone) | PROD 08-24 | Blocked / pending |
 | 21 | Responsive layout | Core pages at ~375 px width | Usable, no horizontal scroll | — | — | Not yet tested |
 | 22 | Accessibility basics | Keyboard-only pass; labels; focus visibility | All controls reachable; visible focus; labelled inputs | — | — | Not yet tested |
 
